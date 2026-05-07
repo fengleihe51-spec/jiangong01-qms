@@ -733,7 +733,7 @@ li {
               <div class="stat-label">功能需求</div>
             </div>
             <div class="stat-box" style="min-width:140px;">
-              <div class="stat-number">70</div>
+              <div class="stat-number">69</div>
               <div class="stat-label">细化功能点</div>
             </div>
             <div class="stat-box" style="min-width:140px;">
@@ -833,13 +833,13 @@ li {
       <div class="slide" data-index="3">
         <div class="slide-inner">
           <h2 class="slide-title">03 核心功能模块总览</h2>
-          <p style="margin-bottom:20px; font-weight:700;">系统共规划 <strong>6大核心模块</strong>，涵盖70项细化功能，覆盖从原材料到成品的全生命周期质量管理。</p>
+          <p style="margin-bottom:20px; font-weight:700;">系统共规划 <strong>6大核心模块</strong>，涵盖69项细化功能，覆盖从原材料到成品的全生命周期质量管理。</p>
 
           <div class="grid-3">
             <div class="card" style="border-top:6px solid var(--green);">
               <div class="card-header"><span class="icon-box" style="background:var(--green);">1</span> 原材料检验管理</div>
               <p style="font-size:0.85rem;">批次登记、材质证明文件上传、外观检验、理化性能测试、状态自动更新</p>
-              <div style="margin-top:12px;"><span class="badge badge-green">14项功能</span></div>
+              <div style="margin-top:12px;"><span class="badge badge-green">13项功能</span></div>
             </div>
             <div class="card" style="border-top:6px solid var(--blue);">
               <div class="card-header"><span class="icon-box" style="background:var(--blue);">2</span> 生产过程检验</div>
@@ -921,13 +921,12 @@ li {
             <strong>状态流转逻辑：</strong>外观检验合格 → 取样送理化测试 → 理化性能合格 → 批次状态更新为"合格" → 允许投入生产。任一环节不合格 → 标记为"待处理" → 触发不合格品登记流程。
           </div>
 
-          <div style="margin-top:8px;">
-            <span class="badge badge-green">QR-001</span>
-            <span class="badge badge-green">QR-002</span>
-            <span class="badge badge-green">QR-003</span>
-            <span class="badge badge-green">QR-004</span>
-            <span class="badge badge-green">QR-005</span>
-          </div>
+           <div style="margin-top:8px;">
+             <span class="badge badge-green">QR-001</span>
+             <span class="badge badge-green">QR-002</span>
+             <span class="badge badge-green">QR-003</span>
+             <span class="badge badge-green">QR-005</span>
+           </div>
         </div>
       </div>
 
@@ -1617,13 +1616,12 @@ li {
           <h2 class="slide-title">16 待确认问题：具体功能疑点（上）</h2>
 
           <div class="card">
-            <div class="card-header" style="background:var(--yellow); display:inline-block; padding:4px 12px; margin-bottom:12px;">原材料检验管理（QR-001 ~ QR-005）</div>
+            <div class="card-header" style="background:var(--yellow); display:inline-block; padding:4px 12px; margin-bottom:12px;">原材料检验管理（QR-001 ~ QR-003、QR-005）</div>
             <table class="data-table">
               <tr><th style="width:80px;">编号</th><th>疑点问题</th></tr>
               <tr><td>问题1</td><td>批次编号规则未定义（是否由系统自动生成？是否与ERP一致？）</td></tr>
               <tr><td>问题2</td><td>材质证明文件上传格式、大小、数量限制？是否需要OCR识别关键字段？</td></tr>
               <tr><td>问题3</td><td>外观检验记录是否支持照片/视频上传？是否支持缺陷位置标注？</td></tr>
-              <tr><td>问题4</td><td>理化性能测试数据是否支持批量导入（如Excel模板）？是否允许手动修正？</td></tr>
             </table>
           </div>
 
@@ -1631,9 +1629,9 @@ li {
             <div class="card-header" style="background:var(--blue); color:#fff; display:inline-block; padding:4px 12px; margin-bottom:12px;">生产过程检验（QR-006 ~ QR-010）</div>
             <table class="data-table">
               <tr><th style="width:80px;">编号</th><th>疑点问题</th></tr>
-              <tr><td>问题5</td><td>工序检验是否与工单绑定？工单信息从何处来（ERP/MES/手动录入）？</td></tr>
-              <tr><td>问题6</td><td>无损检测（UT/MT/PT）结果是否包含图像、波形、探头参数？</td></tr>
-              <tr><td>问题7</td><td>检验任务分配是按角色自动触发还是手动派工？提醒方式（短信/钉钉/微信/站内信）？</td></tr>
+              <tr><td>问题4</td><td>工序检验是否与工单绑定？工单信息从何处来（ERP/MES/手动录入）？</td></tr>
+              <tr><td>问题5</td><td>无损检测（UT/MT/PT）结果是否包含图像、波形、探头参数？</td></tr>
+              <tr><td>问题6</td><td>检验任务分配是按角色自动触发还是手动派工？提醒方式（短信/钉钉/微信/站内信）？</td></tr>
             </table>
           </div>
 
@@ -1641,8 +1639,8 @@ li {
             <div class="card-header" style="background:var(--green); display:inline-block; padding:4px 12px; margin-bottom:12px;">成品检验管理（QR-011 ~ QR-014）</div>
             <table class="data-table">
               <tr><th style="width:80px;">编号</th><th>疑点问题</th></tr>
-              <tr><td>问题8</td><td>二维码追溯信息包含哪些字段？是否支持动态加密？</td></tr>
-              <tr><td>问题9</td><td>产品合格证是否支持自定义模板？是否需要电子签章？</td></tr>
+              <tr><td>问题7</td><td>二维码追溯信息包含哪些字段？是否支持动态加密？</td></tr>
+              <tr><td>问题8</td><td>产品合格证是否支持自定义模板？是否需要电子签章？</td></tr>
             </table>
           </div>
         </div>
@@ -1657,8 +1655,8 @@ li {
             <div class="card-header" style="background:var(--pink); color:#fff; display:inline-block; padding:4px 12px; margin-bottom:12px;">不合格品管理（QR-015 ~ QR-018）</div>
             <table class="data-table">
               <tr><th style="width:80px;">编号</th><th>疑点问题</th></tr>
-              <tr><td>问题10</td><td>不合格品是否需要发起CAPA（纠正与预防措施）流程？</td></tr>
-              <tr><td>问题11</td><td>返工/返修后是否需要重新执行全部工序检验？系统如何标识状态变更？</td></tr>
+              <tr><td>问题9</td><td>不合格品是否需要发起CAPA（纠正与预防措施）流程？</td></tr>
+              <tr><td>问题10</td><td>返工/返修后是否需要重新执行全部工序检验？系统如何标识状态变更？</td></tr>
             </table>
           </div>
 
@@ -1666,10 +1664,10 @@ li {
             <div class="card-header" style="background:var(--purple); color:#fff; display:inline-block; padding:4px 12px; margin-bottom:12px;">质量追溯与统计分析（QR-019 ~ QR-025）</div>
             <table class="data-table">
               <tr><th style="width:80px;">编号</th><th>疑点问题</th></tr>
-              <tr><td>问题12</td><td>追溯路径是否支持跨批次、跨产品、跨工序的图形化展示？</td></tr>
-              <tr><td>问题13</td><td>召回管理是否需要支持邮件/短信通知客户？是否需要生成召回报告？</td></tr>
-              <tr><td>问题14</td><td>报表是否支持实时刷新？是否支持自定义维度（班组/设备/时间段）？</td></tr>
-              <tr><td>问题15</td><td>趋势分析是否支持SPC（统计过程控制）判异规则？</td></tr>
+              <tr><td>问题11</td><td>追溯路径是否支持跨批次、跨产品、跨工序的图形化展示？</td></tr>
+              <tr><td>问题12</td><td>召回管理是否需要支持邮件/短信通知客户？是否需要生成召回报告？</td></tr>
+              <tr><td>问题13</td><td>报表是否支持实时刷新？是否支持自定义维度（班组/设备/时间段）？</td></tr>
+              <tr><td>问题14</td><td>趋势分析是否支持SPC（统计过程控制）判异规则？</td></tr>
             </table>
           </div>
 
@@ -1677,8 +1675,8 @@ li {
             <div class="card-header" style="background:var(--black); color:#fff; display:inline-block; padding:4px 12px; margin-bottom:12px;">系统管理（QR-026 ~ QR-028）</div>
             <table class="data-table">
               <tr><th style="width:80px;">编号</th><th>疑点问题</th></tr>
-              <tr><td>问题16</td><td>用户权限是否支持字段级（如部分人员不可见"不合格原因"）？</td></tr>
-              <tr><td>问题17</td><td>操作日志是否支持审计追踪（满足FDA 21 CFR Part 11）？</td></tr>
+              <tr><td>问题15</td><td>用户权限是否支持字段级（如部分人员不可见"不合格原因"）？</td></tr>
+              <tr><td>问题16</td><td>操作日志是否支持审计追踪（满足FDA 21 CFR Part 11）？</td></tr>
             </table>
           </div>
         </div>
@@ -1811,7 +1809,7 @@ li {
           <div style="margin-top:40px; display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
             <span class="badge badge-green">6大核心模块</span>
             <span class="badge badge-blue">28项功能需求</span>
-            <span class="badge badge-yellow">70项细化功能</span>
+            <span class="badge badge-yellow">69项细化功能</span>
             <span class="badge badge-pink">10-12周工期</span>
           </div>
         </div>
