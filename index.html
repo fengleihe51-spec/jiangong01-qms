@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>上海建工江苏钢结构有限公司 QMS系统 - 需求调研报告</title>
+<style>
+:root {
+  --bg: #FEFAE0;
+  --bg-alt: #FFFBF0;
+  --black: #1A1A1A;
+  --pink: #FF006E;
+  --orange: #FB5607;
+  --blue: #3A86FF;
+  --yellow: #FFBE0B;
+  --green: #06D6A0;
+  --purple: #8338EC;
+  --card: #FFFFFF;
+  --shadow: 5px 5px 0px 0px var(--black);
+  --shadow-sm: 3px 3px 0px 0px var(--black);
+  --border: 3px solid var(--black);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--black);
+  overflow: hidden;
+}
+
+/* ========== Layout ========== */
+#app {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* ========== Sidebar ========== */
+#sidebar {
+  width: 280px;
+  background: var(--yellow);
+  border-right: var(--border);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+  flex-shrink: 0;
+  z-index: 100;
+}
+#sidebar.collapsed { transform: translateX(-100%); margin-left: -280px; }
+
+.sidebar-header {
+  padding: 20px;
+  border-bottom: var(--border);
+  background: var(--pink);
+}
+.sidebar-header h2 {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 1px;
+}
+.sidebar-header p {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.9);
+  margin-top: 4px;
+  font-weight: 700;
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.nav-item {
+  display: block;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  background: var(--card);
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 0.85rem;
+  transition: all 0.15s;
+  text-decoration: none;
+  color: var(--black);
+}
+.nav-item:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0px 0px var(--black); }
+.nav-item.active { background: var(--blue); color: #fff; }
+
+.nav-section {
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin: 16px 8px 8px;
+  color: var(--black);
+  opacity: 0.7;
+}
+
+.sidebar-footer {
+  padding: 12px;
+  border-top: var(--border);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-align: center;
+  background: var(--orange);
+  color: #fff;
+}
+
+/* ========== Main ========== */
+#main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.topbar {
+  height: 56px;
+  background: var(--card);
+  border-bottom: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  flex-shrink: 0;
+}
+
+#menuBtn {
+  width: 40px; height: 40px;
+  background: var(--green);
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+#menuBtn:hover { transform: translate(-2px, -2px); box-shadow: var(--shadow); }
+
+.page-indicator {
+  font-weight: 900;
+  font-size: 0.9rem;
+  background: var(--black);
+  color: var(--yellow);
+  padding: 6px 14px;
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ========== Slide Container ========== */
+#slideContainer {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  padding: 40px 48px;
+  overflow-y: auto;
+  opacity: 0;
+  transform: translateX(60px);
+  transition: all 0.4s cubic-bezier(.4,0,.2,1);
+  pointer-events: none;
+  display: none;
+}
+.slide.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+  display: block;
+}
+.slide.prev {
+  opacity: 0;
+  transform: translateX(-60px);
+  display: block;
+}
+
+/* ========== Slide Content Styles (Neo-Brutalism) ========== */
+.slide-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+h1.slide-title {
+  font-size: 2.4rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+h2.slide-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  margin-bottom: 24px;
+  padding: 12px 20px;
+  background: var(--pink);
+  color: #fff;
+  border: var(--border);
+  box-shadow: var(--shadow);
+  display: inline-block;
+}
+
+h3 {
+  font-size: 1.2rem;
+  font-weight: 900;
+  margin: 24px 0 12px;
+  padding: 8px 14px;
+  background: var(--blue);
+  color: #fff;
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  display: inline-block;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  border: 2px solid var(--black);
+  box-shadow: 2px 2px 0px 0px var(--black);
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+.badge-yellow { background: var(--yellow); }
+.badge-pink { background: var(--pink); color: #fff; }
+.badge-green { background: var(--green); }
+.badge-blue { background: var(--blue); color: #fff; }
+.badge-orange { background: var(--orange); color: #fff; }
+
+.card {
+  background: var(--card);
+  border: var(--border);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card-header {
+  font-size: 1.1rem;
+  font-weight: 900;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--black);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-box {
+  width: 36px; height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+p, li {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  font-weight: 600;
+}
+
+ul {
+  padding-left: 20px;
+}
+li {
+  margin-bottom: 6px;
+}
+
+.highlight-box {
+  background: var(--yellow);
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 16px;
+  margin: 16px 0;
+  font-weight: 800;
+}
+
+.stat-box {
+  background: var(--card);
+  border: var(--border);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  text-align: center;
+}
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--pink);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 0.85rem;
+  font-weight: 800;
+  margin-top: 8px;
+}
+
+/* ========== Flowchart (CSS-based) ========== */
+.flowchart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 0;
+}
+.flow-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.flow-node {
+  padding: 10px 16px;
+  background: var(--card);
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  font-weight: 800;
+  font-size: 0.85rem;
+  text-align: center;
+  min-width: 120px;
+}
+.flow-node.start { background: var(--green); }
+.flow-node.end { background: var(--pink); color: #fff; }
+.flow-node.decision { background: var(--yellow); }
+.flow-node.action { background: var(--blue); color: #fff; }
+.flow-arrow {
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+.flow-annotation {
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--orange);
+  color: #fff;
+  padding: 2px 8px;
+  border: 2px solid var(--black);
+}
+
+/* ========== Table ========== */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin-top: 12px;
+}
+.data-table th, .data-table td {
+  border: 2px solid var(--black);
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 700;
+}
+.data-table th {
+  background: var(--purple);
+  color: #fff;
+}
+.data-table tr:nth-child(even) { background: rgba(0,0,0,0.03); }
+
+/* ========== Bottom Bar ========== */
+#bottomBar {
+  height: 64px;
+  background: var(--card);
+  border-top: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.nav-btn {
+  padding: 10px 28px;
+  font-size: 1rem;
+  font-weight: 900;
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  background: var(--blue);
+  color: #fff;
+  transition: all 0.15s;
+}
+.nav-btn:hover { transform: translate(-2px, -2px); box-shadow: var(--shadow); }
+.nav-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: var(--shadow-sm); }
+.nav-btn.secondary { background: var(--card); color: var(--black); }
+
+/* ========== Cover Slide ========== */
+.cover-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 100%;
+}
+.cover-tag {
+  background: var(--yellow);
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 8px 20px;
+  font-weight: 900;
+  font-size: 0.9rem;
+  margin-bottom: 24px;
+  display: inline-block;
+}
+.cover-title {
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+}
+.cover-subtitle {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  opacity: 0.9;
+}
+.cover-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.cover-meta .badge { font-size: 0.85rem; padding: 8px 16px; }
+
+/* ========== End Slide ========== */
+.end-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 100%;
+}
+.end-title {
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 20px;
+}
+.end-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  max-width: 600px;
+  line-height: 1.8;
+}
+
+/* ========== Progress Bar ========== */
+#progressWrap {
+  height: 8px;
+  background: var(--black);
+  width: 100%;
+}
+#progressBar {
+  height: 100%;
+  background: var(--pink);
+  width: 0%;
+  transition: width 0.4s;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 900px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .slide { padding: 24px; }
+  .cover-title { font-size: 2rem; }
+  h1.slide-title { font-size: 1.6rem; }
+  h2.slide-title { font-size: 1.3rem; }
+  #sidebar { position: absolute; height: 100%; }
+}
+
+@media (max-width: 600px) {
+  .flow-row { flex-direction: column; }
+  .flow-arrow { transform: rotate(90deg); }
+  .topbar { padding: 0 12px; }
+  .slide { padding: 16px; }
+}
+
+/* ========== Scrollbar ========== */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); border-left: var(--border); }
+::-webkit-scrollbar-thumb { background: var(--black); border: 2px solid var(--bg); }
+
+/* ========== Animations ========== */
+@keyframes popIn {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.pop-in { animation: popIn 0.4s cubic-bezier(.4,0,.2,1); }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- Sidebar -->
+  <nav id="sidebar">
+    <div class="sidebar-header">
+      <h2>QMS 需求调研报告</h2>
+      <p>上海建工江苏钢结构有限公司</p>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">目录导航</div>
+      <a class="nav-item active" data-index="0" href="#">封面</a>
+      <a class="nav-item" data-index="1" href="#">项目背景</a>
+      <a class="nav-item" data-index="2" href="#">现状痛点与目标</a>
+      <a class="nav-item" data-index="3" href="#">核心功能总览</a>
+      <a class="nav-item" data-index="4" href="#">原材料检验管理</a>
+      <a class="nav-item" data-index="5" href="#">生产过程检验</a>
+      <a class="nav-item" data-index="6" href="#">成品检验与合格证</a>
+      <a class="nav-item" data-index="7" href="#">不合格品管理</a>
+      <a class="nav-item" data-index="8" href="#">质量追溯与统计</a>
+      <a class="nav-item" data-index="9" href="#">系统管理与非功能需求</a>
+
+      <div class="nav-section">业务流程图</div>
+      <a class="nav-item" data-index="10" href="#">原材料检验流程</a>
+      <a class="nav-item" data-index="11" href="#">生产过程检验流程</a>
+      <a class="nav-item" data-index="12" href="#">不合格品管理流程</a>
+      <a class="nav-item" data-index="13" href="#">成品检验与合格证流程</a>
+      <a class="nav-item" data-index="14" href="#">质量追溯与整体视图</a>
+
+      <div class="nav-section">待确认问题</div>
+      <a class="nav-item" data-index="15" href="#">售前核心问题</a>
+      <a class="nav-item" data-index="16" href="#">功能疑点（上）</a>
+      <a class="nav-item" data-index="17" href="#">功能疑点（下）</a>
+      <a class="nav-item" data-index="18" href="#">非功能需求风险</a>
+      <a class="nav-item" data-index="19" href="#">实施规划与下一步</a>
+      <a class="nav-item" data-index="20" href="#">结束</a>
+    </div>
+    <div class="sidebar-footer">PROJ-2026-004 | 2026-05-07</div>
+  </nav>
+
+  <!-- Main -->
+  <div id="main">
+    <div id="progressWrap"><div id="progressBar"></div></div>
+
+    <div class="topbar">
+      <button id="menuBtn" title="切换目录">&#9776;</button>
+      <div style="font-weight:900; font-size:1rem;">上海建工江苏钢结构有限公司 QMS系统</div>
+      <div class="page-indicator"><span id="currPage">1</span> / <span id="totalPage">21</span></div>
+    </div>
+
+    <div id="slideContainer">
+
+      <!-- Slide 0: Cover -->
+      <div class="slide active" data-index="0">
+        <div class="cover-slide">
+          <div class="cover-tag">PROJ-2026-004 | 需求调研报告</div>
+          <div class="cover-title">钢结构制造企业<br>质量管理系统</div>
+          <div class="cover-subtitle">上海建工江苏钢结构有限公司 QMS系统</div>
+          <div class="cover-meta">
+            <span class="badge badge-pink">售前阶段</span>
+            <span class="badge badge-yellow">需求调研</span>
+            <span class="badge badge-green">2026.05</span>
+          </div>
+          <div style="margin-top:60px; display:flex; gap:40px; flex-wrap:wrap; justify-content:center;">
+            <div class="stat-box" style="min-width:140px;">
+              <div class="stat-number">6</div>
+              <div class="stat-label">核心模块</div>
+            </div>
+            <div class="stat-box" style="min-width:140px;">
+              <div class="stat-number">28</div>
+              <div class="stat-label">功能需求</div>
+            </div>
+            <div class="stat-box" style="min-width:140px;">
+              <div class="stat-number">70</div>
+              <div class="stat-label">细化功能点</div>
+            </div>
+            <div class="stat-box" style="min-width:140px;">
+              <div class="stat-number">10-12</div>
+              <div class="stat-label">建议工期(周)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 1: 项目背景 -->
+      <div class="slide" data-index="1">
+        <div class="slide-inner">
+          <h2 class="slide-title">01 项目背景</h2>
+
+          <div class="card">
+            <div class="card-header"><span class="icon-box" style="background:var(--green);">&#128119;</span> 客户简介</div>
+            <p><strong>上海建工江苏钢结构有限公司</strong>是一家专业钢结构制造企业，主要从事工业厂房、桥梁、高层建筑等钢结构产品的<strong>设计、制造与安装</strong>。随着企业规模扩大和业务增长，现有的质量管理方式已无法满足精细化管理需求。</p>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><span class="icon-box" style="background:var(--yellow);">&#128161;</span> 需求来源</div>
+              <ul>
+                <li>基于公司质量管理体系要求</li>
+                <li>结合实际生产流程特点</li>
+                <li>各部门（质检部、生产部、信息部等）联合提出</li>
+                <li>现有手工/Excel管理方式效率低下</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="card-header"><span class="icon-box" style="background:var(--blue);">&#127919;</span> 项目目标</div>
+              <ul>
+                <li>实现从原材料入库到成品出厂的<strong>全流程质量追溯</strong></li>
+                <li>提高质量检验工作效率，<strong>减少人为误差</strong></li>
+                <li><strong>实时监控</strong>生产过程质量状态</li>
+                <li>提供准确的<strong>质量统计分析</strong>数据，支持决策</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="highlight-box">
+            <strong>关键背景：</strong>企业目前质量数据主要以纸质记录和Excel表格形式存储，缺乏系统化的质量信息管理平台。随着产量增长，数据分散、追溯困难、统计分析滞后等问题日益突出，亟需建立一套全面、高效的质量管理信息系统（QMS）。
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2: 现状痛点与目标 -->
+      <div class="slide" data-index="2">
+        <div class="slide-inner">
+          <h2 class="slide-title">02 现状痛点与建设目标</h2>
+
+          <div class="grid-2">
+            <div>
+              <h3 style="background:var(--pink);">当前痛点</h3>
+              <div class="card">
+                <div class="card-header">数据分散难追溯</div>
+                <p>质量数据分散在纸质记录、Excel、不同部门电脑中，无法实现快速追溯。出现质量问题时，需要人工翻阅大量纸质档案，耗时耗力。</p>
+              </div>
+              <div class="card">
+                <div class="card-header">手工录入易出错</div>
+                <p>检验数据全靠手工记录和转录，存在抄错、漏记、数据不一致等人为误差风险，且无法保证实时性。</p>
+              </div>
+              <div class="card">
+                <div class="card-header">统计分析滞后</div>
+                <p>月度/季度质量报表需要人工汇总，通常T+N才能出具，管理层无法及时获取质量状况，错失最佳改进时机。</p>
+              </div>
+              <div class="card">
+                <div class="card-header">不合格品闭环难</div>
+                <p>不合格品处理流程缺乏系统跟踪，返工/返修后复检记录容易遗漏，处理进度不透明，闭环管理困难。</p>
+              </div>
+            </div>
+            <div>
+              <h3 style="background:var(--green);">建设目标</h3>
+              <div class="card">
+                <div class="card-header">全流程数字化</div>
+                <p>覆盖原材料检验、生产过程检验（切割→焊接→组装→涂装）、成品检验的全流程数字化管理，实现数据一次录入、全程共享。</p>
+              </div>
+              <div class="card">
+                <div class="card-header">一键追溯</div>
+                <p>通过批次号或产品编号，秒级查询从原材料到成品的完整质量档案，包括所有检验记录、不合格处理、合格证信息。</p>
+              </div>
+              <div class="card">
+                <div class="card-header">实时统计分析</div>
+                <p>自动生成合格率、不良率、趋势分析等图表，支持按工序/班组/时间段等多维度统计，支持自定义报表导出。</p>
+              </div>
+              <div class="card">
+                <div class="card-header">二维码合格证</div>
+                <p>成品自动生成附带二维码的合格证，扫码即可查看完整质量信息，提升客户信任度和产品附加值。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3: 核心功能总览 -->
+      <div class="slide" data-index="3">
+        <div class="slide-inner">
+          <h2 class="slide-title">03 核心功能模块总览</h2>
+          <p style="margin-bottom:20px; font-weight:700;">系统共规划 <strong>6大核心模块</strong>，涵盖70项细化功能，覆盖从原材料到成品的全生命周期质量管理。</p>
+
+          <div class="grid-3">
+            <div class="card" style="border-top:6px solid var(--green);">
+              <div class="card-header"><span class="icon-box" style="background:var(--green);">1</span> 原材料检验管理</div>
+              <p style="font-size:0.85rem;">批次登记、材质证明文件上传、外观检验、理化性能测试、状态自动更新</p>
+              <div style="margin-top:12px;"><span class="badge badge-green">14项功能</span></div>
+            </div>
+            <div class="card" style="border-top:6px solid var(--blue);">
+              <div class="card-header"><span class="icon-box" style="background:var(--blue);">2</span> 生产过程检验</div>
+              <p style="font-size:0.85rem;">切割/焊接/组装/涂装四工序检验，工单绑定，任务分配与提醒，无损检测记录</p>
+              <div style="margin-top:12px;"><span class="badge badge-blue">11项功能</span></div>
+            </div>
+            <div class="card" style="border-top:6px solid var(--yellow);">
+              <div class="card-header"><span class="icon-box" style="background:var(--yellow);">3</span> 成品检验管理</div>
+              <p style="font-size:0.85rem;">成品报检、外观/尺寸/无损检测复核、综合判定、合格证生成、二维码追溯</p>
+              <div style="margin-top:12px;"><span class="badge badge-yellow">10项功能</span></div>
+            </div>
+            <div class="card" style="border-top:6px solid var(--pink);">
+              <div class="card-header"><span class="icon-box" style="background:var(--pink); color:#fff;">4</span> 不合格品管理</div>
+              <p style="font-size:0.85rem;">不合格登记、原因分析（人机料法环）、返工/返修/报废处理、多级审批、复检跟踪</p>
+              <div style="margin-top:12px;"><span class="badge badge-pink">9项功能</span></div>
+            </div>
+            <div class="card" style="border-top:6px solid var(--purple);">
+              <div class="card-header"><span class="icon-box" style="background:var(--purple); color:#fff;">5</span> 质量追溯</div>
+              <p style="font-size:0.85rem;">按批次/产品编号追溯全流程、图形化追溯链、异常快速定位、召回管理</p>
+              <div style="margin-top:12px;"><span class="badge badge-blue">6项功能</span></div>
+            </div>
+            <div class="card" style="border-top:6px solid var(--orange);">
+              <div class="card-header"><span class="icon-box" style="background:var(--orange); color:#fff;">6</span> 质量统计分析</div>
+              <p style="font-size:0.85rem;">合格率/不良率统计、趋势分析、质量预警阈值、自定义报表设计器</p>
+              <div style="margin-top:12px;"><span class="badge badge-orange">7项功能</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:20px; background:var(--black); color:var(--yellow);">
+            <div class="card-header" style="border-color:var(--yellow); color:var(--yellow);"><span class="icon-box" style="background:var(--yellow); color:var(--black);">+</span> 系统管理模块</div>
+            <p>用户权限管理（角色分配、按钮级权限）、基础数据维护（工序/材质/缺陷类型/检验标准字典）、操作日志审计、数据备份配置 —— 共 <strong>13项功能</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4: 原材料检验管理 -->
+      <div class="slide" data-index="4">
+        <div class="slide-inner">
+          <h2 class="slide-title">04 原材料检验管理</h2>
+          <p style="margin-bottom:16px;">覆盖原材料从到货登记到合格入库的全流程，确保只有检验合格的原材料才能投入生产。</p>
+
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><span class="icon-box" style="background:var(--green);">&#128203;</span> 批次信息管理</div>
+              <ul style="font-size:0.85rem;">
+                <li>登记批次编号、材质类型（Q235B/Q355B/304/316等）、规格型号、供应商、数量、到货日期</li>
+                <li>系统自动生成批次状态：<strong>待检验</strong></li>
+                <li>支持Excel批量导入批次信息</li>
+                <li>仅允许删除未发生检验记录的批次</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="card-header"><span class="icon-box" style="background:var(--yellow);">&#128206;</span> 材质证明文件</div>
+              <ul style="font-size:0.85rem;">
+                <li>支持PDF/图片格式上传，每个批次可上传多个文件</li>
+                <li>文件与批次关联存储，支持在线预览和下载</li>
+                <li>有权限用户可删除错误上传的文件</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="card-header"><span class="icon-box" style="background:var(--blue);">&#128065;</span> 外观检验</div>
+              <ul style="font-size:0.85rem;">
+                <li>选择批次，记录检验结果（合格/不合格）、缺陷描述</li>
+                <li>记录检验员、检验日期</li>
+                <li>未归档前可修改或删除记录</li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="card-header"><span class="icon-box" style="background:var(--pink);">&#128202;</span> 理化性能测试</div>
+              <ul style="font-size:0.85rem;">
+                <li>录入化学成分：C、Si、Mn、P、S等</li>
+                <li>录入力学性能：屈服强度、抗拉强度、延伸率</li>
+                <li>支持Excel模板批量导入测试数据，自动匹配批次</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="highlight-box">
+            <strong>状态流转逻辑：</strong>外观检验合格 → 取样送理化测试 → 理化性能合格 → 批次状态更新为"合格" → 允许投入生产。任一环节不合格 → 标记为"待处理" → 触发不合格品登记流程。
+          </div>
+
+          <div style="margin-top:8px;">
+            <span class="badge badge-green">QR-001</span>
+            <span class="badge badge-green">QR-002</span>
+            <span class="badge badge-green">QR-003</span>
+            <span class="badge badge-green">QR-004</span>
+            <span class="badge badge-green">QR-005</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 5: 生产过程检验 -->
+      <div class="slide" data-index="5">
+        <div class="slide-inner">
+          <h2 class="slide-title">05 生产过程检验</h2>
+          <p style="margin-bottom:16px;">覆盖切割→焊接→组装→涂装四大关键工序，实现工序级质量控制和不合格品即时拦截。</p>
+
+          <div class="grid-2">
+            <div class="card" style="border-left:6px solid var(--orange);">
+              <div class="card-header"><span class="icon-box" style="background:var(--orange); color:#fff;">&#9986;</span> 切割工序检验</div>
+              <ul style="font-size:0.85rem;">
+                <li>尺寸精度检测</li>
+                <li>切割质量：粗糙度、垂直度</li>
+                <li>支持上传切割质量照片</li>
+              </ul>
+            </div>
+            <div class="card" style="border-left:6px solid var(--pink);">
+              <div class="card-header"><span class="icon-box" style="background:var(--pink); color:#fff;">&#128295;</span> 焊接工序检验</div>
+              <ul style="font-size:0.85rem;">
+                <li>焊缝外观：咬边、气孔检查</li>
+                <li>焊脚尺寸测量</li>
+                <li>无损检测（UT/MT/PT）结果录入及报告上传</li>
+              </ul>
+            </div>
+            <div class="card" style="border-left:6px solid var(--blue);">
+              <div class="card-header"><span class="icon-box" style="background:var(--blue); color:#fff;">&#128208;</span> 组装工序检验</div>
+              <ul style="font-size:0.85rem;">
+                <li>组装精度：孔距、平行度</li>
+                <li>螺栓扭矩检测值记录</li>
+              </ul>
+            </div>
+            <div class="card" style="border-left:6px solid var(--green);">
+              <div class="card-header"><span class="icon-box" style="background:var(--green);">&#127912;</span> 涂装工序检验</div>
+              <ul style="font-size:0.85rem;">
+                <li>涂层厚度：多点测量平均值</li>
+                <li>附着力测试结果</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card" style="background:#fff;">
+            <div class="card-header"><span class="icon-box" style="background:var(--purple); color:#fff;">&#9881;</span> 工单管理与任务分配</div>
+            <div class="grid-2" style="margin-top:8px;">
+              <div>
+                <p><strong>工单来源：</strong>从ERP同步或手动录入，支持按工单号、产品编号、工序、状态查询</p>
+                <p style="margin-top:8px;"><strong>任务分配：</strong>生产管理人员可将工单检验任务指派给指定质检员</p>
+              </div>
+              <div>
+                <p><strong>待检提醒：</strong>按工序、班组、优先级展示待检验工单，支持红点/站内信提醒</p>
+                <p style="margin-top:8px;"><strong>数据导入：</strong>支持按工单+工序导入Excel检验数据（批量录入或设备自动采集）</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="highlight-box">
+            <strong>关键机制：</strong>任一工序检验不合格 → 立即触发不合格品登记流程 → 阻断后续工序流转 → 处理完成后复检合格方可继续。工序顺序可配置，检验项支持自定义扩展。
+          </div>
+
+          <div style="margin-top:8px;">
+            <span class="badge badge-green">QR-006</span>
+            <span class="badge badge-green">QR-007</span>
+            <span class="badge badge-green">QR-008</span>
+            <span class="badge badge-green">QR-009</span>
+            <span class="badge badge-green">QR-010</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 6: 成品检验与合格证 -->
+      <div class="slide" data-index="6">
+        <div class="slide-inner">
+          <h2 class="slide-title">06 成品检验与合格证</h2>
+          <p style="margin-bottom:16px;">所有工序完成后进入成品检验环节，通过综合判定后生成附带二维码的合格证，实现产品身份数字化。</p>
+
+          <div class="grid-2">
+            <div>
+              <div class="card">
+                <div class="card-header"><span class="icon-box" style="background:var(--yellow);">&#128228;</span> 成品报检</div>
+                <p style="font-size:0.85rem;">工单全部工序完成后，由生产部门发起成品报检，生成唯一报检单号。支持按产品编号、工单号、报检日期、检验状态查询报检列表。</p>
+              </div>
+              <div class="card">
+                <div class="card-header"><span class="icon-box" style="background:var(--green);">&#128065;</span> 成品外观检验</div>
+                <p style="font-size:0.85rem;">记录成品表面质量、外观缺陷等详细信息，支持上传缺陷照片。</p>
+              </div>
+              <div class="card">
+                <div class="card-header"><span class="icon-box" style="background:var(--blue);">&#128207;</span> 尺寸精度检测</div>
+                <p style="font-size:0.85rem;">按图纸要求录入关键尺寸实测值，系统自动比对标准值和公差范围。</p>
+              </div>
+            </div>
+            <div>
+              <div class="card">
+                <div class="card-header"><span class="icon-box" style="background:var(--purple); color:#fff;">&#128301;</span> 无损检测复核</div>
+                <p style="font-size:0.85rem;">对成品进行UT/MT/PT检测复核，记录检测结果、检测区域、检测人员、报告编号。</p>
+              </div>
+              <div class="card">
+                <div class="card-header"><span class="icon-box" style="background:var(--pink); color:#fff;">&#9989;</span> 综合判定</div>
+                <p style="font-size:0.85rem;">外观、尺寸、无损检测全部合格后，系统自动判定成品"合格"；任一不合格则判定为"不合格"并转入不合格品管理流程。</p>
+              </div>
+              <div class="card" style="background:var(--yellow);">
+                <div class="card-header"><span class="icon-box" style="background:var(--orange); color:#fff;">&#128242;</span> 合格证与二维码</div>
+                <p style="font-size:0.85rem;">自动生成合格证（产品编号、规格、检验标准、检验结论、质检章），支持打印纸质版或下载PDF。二维码包含产品编号、批次号、合格证编号、主要检验数据URL。</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <span class="badge badge-green">QR-011</span>
+            <span class="badge badge-green">QR-012</span>
+            <span class="badge badge-green">QR-013</span>
+            <span class="badge badge-green">QR-014</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 7: 不合格品管理 -->
+      <div class="slide" data-index="7">
+        <div class="slide-inner">
+          <h2 class="slide-title">07 不合格品管理</h2>
+          <p style="margin-bottom:16px;">建立从发现不合格到最终关闭的完整闭环管理，支持原因分析、多级审批、处理跟踪和复检验证。</p>
+
+          <div class="card">
+            <div class="card-header"><span class="icon-box" style="background:var(--pink); color:#fff;">&#128221;</span> 不合格品登记</div>
+            <div class="grid-2" style="margin-top:8px;">
+              <div>
+                <p><strong>关联对象：</strong>工单或原材料批次</p>
+                <p style="margin-top:6px;"><strong>缺陷信息：</strong>缺陷类型（表面/尺寸/焊接/涂装/材质）、位置、严重程度（轻微/严重/致命）</p>
+              </div>
+              <div>
+                <p><strong>附件：</strong>支持上传缺陷照片、检测报告</p>
+                <p style="margin-top:6px;"><strong>查询：</strong>按产品编号/批次号、缺陷类型、处理方式、处理状态等组合查询</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="card">
+              <div class="card-header"><span class="icon-box" style="background:var(--orange); color:#fff;">&#128300;</span> 原因分析</div>
+              <p style="font-size:0.85rem;">记录<strong>人机料法环</strong>分析结果，选择主要原因类别，为质量改进提供数据支撑。</p>
+            </div>
+            <div class="card">
+              <div class="card-header"><span class="icon-box" style="background:var(--blue); color:#fff;">&#128736;</span> 处理方式</div>
+              <p style="font-size:0.85rem;">支持<strong>返工、返修、报废</strong>三种方式。返工/返修需主管审批，报废需质量经理审批。</p>
+            </div>
+            <div class="card">
+              <div class="card-header"><span class="icon-box" style="background:var(--green);">&#128260;</span> 复检与关闭</div>
+              <p style="font-size:0.85rem;">返工/返修后<strong>强制复检</strong>，记录复检结论。合格则关闭不合格记录，不合格则升级处理/重新评审。</p>
+            </div>
+          </div>
+
+          <div class="card" style="background:var(--black); color:#fff;">
+            <div class="card-header" style="border-color:rgba(255,255,255,0.3); color:var(--yellow);"><span class="icon-box" style="background:var(--yellow); color:var(--black);">&#128200;</span> 统计与报告</div>
+            <p>支持按时间范围/产品类型导出不合格品统计及分析报告（Excel），报废自动统计损失金额，生成不合格品分析报告。</p>
+          </div>
+
+          <div style="margin-top:12px;">
+            <span class="badge badge-pink">QR-015</span>
+            <span class="badge badge-pink">QR-016</span>
+            <span class="badge badge-pink">QR-017</span>
+            <span class="badge badge-pink">QR-018</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 8: 质量追溯与统计分析 -->
+      <div class="slide" data-index="8">
+        <div class="slide-inner">
+          <h2 class="slide-title">08 质量追溯与统计分析</h2>
+
+          <div class="grid-2">
+            <div>
+              <h3 style="background:var(--purple);">质量追溯</h3>
+              <div class="card">
+                <div class="card-header"><span class="icon-box" style="background:var(--purple); color:#fff;">&#128269;</span> 按批次号追溯</div>
+                <p style="font-size:0.85rem;">输入原材料批次号，查询该批次用于哪些工单、各工序检验记录、最终成品信息。支持展示上下游依赖关系。</p>
+              </div>
+              <div class="card">
+                <div class="card-header"><span class="icon-box" style="background:var(--blue); color:#fff;">&#128300;</span> 按产品编号追溯</div>
+                <p style="font-size:0.85rem;">输入成品产品编号，展示从原材料到成品的<strong>全流程检验记录</strong>，以时间轴或流程图形式呈现。</p>
+              </div>
+              <div class="card">
+                <div class="card-header"><span class="icon-box" style="background:var(--pink); color:#fff;">&#9888;</span> 异常快速定位</div>
+                <p style="font-size:0.85rem;">在追溯图中<strong>高亮显示不合格工序</strong>，展示缺陷详情，快速定位问题环节。</p>
+              </div>
+              <div class="card">
+                <div class="card-header"><span class="icon-box" style="background:var(--orange); color:#fff;">&#128227;</span> 召回管理</div>
+                <p style="font-size:0.85rem;">选择产品范围（批次号/日期范围），填写召回原因，生成召回通知单，导出召回产品清单及处理结果。</p>
+              </div>
+            </div>
+            <div>
+              <h3 style="background:var(--orange);">质量统计分析</h3>
+              <div class="card">
+                <div class="card-header"><span class="icon-box" style="background:var(--green);">&#128200;</span> 合格率统计</div>
+                <p style="font-size:0.85rem;">按工序（切割/焊接/组装/涂装）或班组统计合格率，生成图表+表格对比，支持时间段筛选。</p>
+              </div>
+              <div class="card">
+                <div class="card-header"><span class="icon-box" style="background:var(--yellow);">&#128201;</span> 不良率分析</div>
+                <p style="font-size:0.85rem;">饼图/柱状图展示各类缺陷（表面/尺寸/焊接/涂装/材质）占比。支持按产线/车间横向对比不良率。</p>
+              </div>
+              <div class="card">
+                <div class="card-header"><span class="icon-box" style="background:var(--blue); color:#fff;">&#128200;</span> 趋势分析</div>
+                <p style="font-size:0.85rem;">按月/周展示合格率变化折线图，支持预测线。可设置质量预警阈值，低于设定值时系统自动发出预警通知。</p>
+              </div>
+              <div class="card">
+                <div class="card-header"><span class="icon-box" style="background:var(--pink); color:#fff;">&#128196;</span> 自定义报表</div>
+                <p style="font-size:0.85rem;">用户可选择字段、统计维度、筛选条件生成个性化报表，保存为模板。支持导出Excel/PDF。</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <span class="badge badge-blue">QR-019</span>
+            <span class="badge badge-blue">QR-020</span>
+            <span class="badge badge-blue">QR-021</span>
+            <span class="badge badge-orange">QR-022</span>
+            <span class="badge badge-orange">QR-023</span>
+            <span class="badge badge-orange">QR-024</span>
+            <span class="badge badge-orange">QR-025</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 9: 系统管理与非功能需求 -->
+      <div class="slide" data-index="9">
+        <div class="slide-inner">
+          <h2 class="slide-title">09 系统管理与非功能需求</h2>
+
+          <div class="grid-2">
+            <div>
+              <h3 style="background:var(--black); color:#fff;">系统管理</h3>
+              <div class="card">
+                <div class="card-header">用户权限管理</div>
+                <ul style="font-size:0.85rem;">
+                  <li>用户增删改查，分配角色</li>
+                  <li>角色管理：分配菜单权限、操作权限</li>
+                  <li><strong>按钮级权限控制</strong>（如仅允许查看，不允许导出）</li>
+                </ul>
+              </div>
+              <div class="card">
+                <div class="card-header">基础数据维护</div>
+                <ul style="font-size:0.85rem;">
+                  <li>工序维护：新增/编辑/删除工序，设置工序顺序</li>
+                  <li>材质类型：维护材质代码及名称（Q235B、Q355B等）</li>
+                  <li>缺陷类型：维护缺陷字典（表面/尺寸/焊接/涂装/材质）</li>
+                  <li>检验标准：维护各工序检验项目、标准值、公差范围</li>
+                </ul>
+              </div>
+              <div class="card">
+                <div class="card-header">日志与备份</div>
+                <ul style="font-size:0.85rem;">
+                  <li>操作日志：按用户、时间、模块、操作类型查询，导出Excel审计</li>
+                  <li>数据备份：手动触发全量/增量备份，配置自动备份周期</li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <h3 style="background:var(--pink);">非功能需求</h3>
+              <div class="card">
+                <div class="card-header">性能需求</div>
+                <table class="data-table" style="font-size:0.8rem;">
+                  <tr><th>编号</th><th>需求</th></tr>
+                  <tr><td>QN-001</td><td>系统响应时间≤3秒（查询操作）</td></tr>
+                  <tr><td>QN-002</td><td>支持≥50个并发用户同时在线</td></tr>
+                  <tr><td>QN-003</td><td>批量导入导出效率≥1000条/分钟</td></tr>
+                </table>
+              </div>
+              <div class="card">
+                <div class="card-header">可用性与安全</div>
+                <table class="data-table" style="font-size:0.8rem;">
+                  <tr><th>编号</th><th>需求</th></tr>
+                  <tr><td>QN-004</td><td>系统全年可用率≥99.5%</td></tr>
+                  <tr><td>QN-005</td><td>故障恢复时间≤2小时</td></tr>
+                  <tr><td>QN-007</td><td>用户名+密码身份认证</td></tr>
+                  <tr><td>QN-008</td><td>越权访问被拒绝</td></tr>
+                  <tr><td>QN-009</td><td>关键数据加密存储</td></tr>
+                  <tr><td>QN-010</td><td>定期数据备份，周期≤1天</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <span class="badge badge-blue">QR-026</span>
+            <span class="badge badge-blue">QR-027</span>
+            <span class="badge badge-blue">QR-028</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 10: 原材料检验流程图 -->
+      <div class="slide" data-index="10">
+        <div class="slide-inner">
+          <h2 class="slide-title">10 业务流程图：原材料检验</h2>
+          <p style="margin-bottom:20px;">从原材料到货到合格入库的完整检验流程，任一环节不合格即触发不合格品管理。</p>
+
+          <div class="card" style="max-width:700px; margin:0 auto;">
+            <div class="flowchart">
+              <div class="flow-node start">原材料到货</div>
+              <div class="flow-arrow">&#11015;</div>
+              <div class="flow-node">质检员登记批次信息</div>
+              <div class="flow-arrow">&#11015;</div>
+              <div class="flow-node">上传材质证明文件</div>
+              <div class="flow-arrow">&#11015;</div>
+              <div class="flow-node">执行外观检验</div>
+              <div class="flow-arrow">&#11015;</div>
+              <div class="flow-node decision">外观是否合格？</div>
+              <div class="flow-row">
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <span class="flow-annotation">不合格</span>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node end">标记为"待处理"</div>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node end">触发不合格品登记流程</div>
+                </div>
+                <div style="width:40px;"></div>
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <span class="flow-annotation">合格</span>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node">取样送理化性能测试</div>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node">录入化学成分/力学性能数据</div>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node decision">理化性能是否合格？</div>
+                  <div class="flow-row">
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                      <span class="flow-annotation">不合格</span>
+                      <div class="flow-arrow">&#11015;</div>
+                      <div class="flow-node end">触发不合格品登记流程</div>
+                    </div>
+                    <div style="width:20px;"></div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                      <span class="flow-annotation">合格</span>
+                      <div class="flow-arrow">&#11015;</div>
+                      <div class="flow-node action">更新批次状态为"合格"</div>
+                      <div class="flow-arrow">&#11015;</div>
+                      <div class="flow-node start">允许投入生产</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="highlight-box" style="max-width:700px; margin:20px auto 0;">
+            <strong>关键点：</strong>批次编号规则需与ERP对齐；材质证明文件支持PDF/图片；理化数据支持批量导入；检验状态自动更新，减少人工干预。
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 11: 生产过程检验流程 -->
+      <div class="slide" data-index="11">
+        <div class="slide-inner">
+          <h2 class="slide-title">11 业务流程图：生产过程检验</h2>
+          <p style="margin-bottom:20px;">切割→焊接→组装→涂装四工序串联检验，任一不合格即中断并转入不合格品处理。</p>
+
+          <div class="card">
+            <div class="flowchart">
+              <div class="flow-node start">生产工单下发</div>
+              <div class="flow-arrow">&#11015;</div>
+              <div class="flow-node action">切割工序</div>
+              <div class="flow-arrow">&#11015;</div>
+              <div class="flow-node">检验尺寸精度/切割质量</div>
+              <div class="flow-arrow">&#11015;</div>
+              <div class="flow-node decision">合格？</div>
+              <div class="flow-row">
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <span class="flow-annotation">否</span>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node end">不合格品处理子流程</div>
+                </div>
+                <div style="width:20px;"></div>
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <span class="flow-annotation">是</span>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node action">焊接工序</div>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node">检验焊缝外观/焊脚尺寸/无损检测</div>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node decision">合格？</div>
+                  <div class="flow-row">
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                      <span class="flow-annotation">否</span>
+                      <div class="flow-arrow">&#11015;</div>
+                      <div class="flow-node end">不合格品处理子流程</div>
+                    </div>
+                    <div style="width:20px;"></div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                      <span class="flow-annotation">是</span>
+                      <div class="flow-arrow">&#11015;</div>
+                      <div class="flow-node action">组装工序</div>
+                      <div class="flow-arrow">&#11015;</div>
+                      <div class="flow-node">检验组装精度/螺栓扭矩</div>
+                      <div class="flow-arrow">&#11015;</div>
+                      <div class="flow-node decision">合格？</div>
+                      <div class="flow-row">
+                        <div style="display:flex; flex-direction:column; align-items:center;">
+                          <span class="flow-annotation">否</span>
+                          <div class="flow-arrow">&#11015;</div>
+                          <div class="flow-node end">不合格品处理子流程</div>
+                        </div>
+                        <div style="width:20px;"></div>
+                        <div style="display:flex; flex-direction:column; align-items:center;">
+                          <span class="flow-annotation">是</span>
+                          <div class="flow-arrow">&#11015;</div>
+                          <div class="flow-node action">涂装工序</div>
+                          <div class="flow-arrow">&#11015;</div>
+                          <div class="flow-node">检验涂层厚度/附着力</div>
+                          <div class="flow-arrow">&#11015;</div>
+                          <div class="flow-node decision">合格？</div>
+                          <div class="flow-row">
+                            <div style="display:flex; flex-direction:column; align-items:center;">
+                              <span class="flow-annotation">否</span>
+                              <div class="flow-arrow">&#11015;</div>
+                              <div class="flow-node end">不合格品处理子流程</div>
+                            </div>
+                            <div style="width:20px;"></div>
+                            <div style="display:flex; flex-direction:column; align-items:center;">
+                              <span class="flow-annotation">是</span>
+                              <div class="flow-arrow">&#11015;</div>
+                              <div class="flow-node start">成品检验环节</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="highlight-box">
+            <strong>关键点：</strong>工序顺序可配置；检验项支持自定义扩展；不合格品立即中断并触发处理流程；支持无损检测图像附件上传。
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 12: 不合格品管理流程 -->
+      <div class="slide" data-index="12">
+        <div class="slide-inner">
+          <h2 class="slide-title">12 业务流程图：不合格品管理</h2>
+          <p style="margin-bottom:20px;">从发现不合格到最终关闭的闭环管理，支持返工、返修、报废三种处理方式。</p>
+
+          <div class="card" style="max-width:720px; margin:0 auto;">
+            <div class="flowchart">
+              <div class="flow-node start">检验发现不合格</div>
+              <div class="flow-arrow">&#11015;</div>
+              <div class="flow-node">登记不合格品信息</div>
+              <div class="flow-arrow">&#11015;</div>
+              <div class="flow-node">缺陷类型/位置/严重程度</div>
+              <div class="flow-arrow">&#11015;</div>
+              <div class="flow-node">原因分析</div>
+              <div class="flow-arrow">&#11015;</div>
+              <div class="flow-node decision">处理方式选择</div>
+              <div class="flow-row">
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <span class="flow-annotation">返工</span>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node">返回原工序重新加工</div>
+                </div>
+                <div style="width:10px;"></div>
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <span class="flow-annotation">返修</span>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node">特殊修理流程</div>
+                </div>
+                <div style="width:10px;"></div>
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <span class="flow-annotation">报废</span>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node end">隔离并记录报废</div>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node">统计报废损失</div>
+                </div>
+              </div>
+              <div class="flow-row">
+                <div class="flow-arrow">&#11015;</div>
+                <div></div>
+                <div></div>
+              </div>
+              <div class="flow-node">重新报检</div>
+              <div class="flow-arrow">&#11015;</div>
+              <div class="flow-node decision">复检合格？</div>
+              <div class="flow-row">
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <span class="flow-annotation">是</span>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node action">关闭不合格记录</div>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node start">生成不合格品分析报告</div>
+                </div>
+                <div style="width:40px;"></div>
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <span class="flow-annotation">否</span>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node end">升级处理/重新评审</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="highlight-box" style="max-width:720px; margin:20px auto 0;">
+            <strong>关键点：</strong>处理方式支持多级审批（返工/返修需主管审批，报废需质量经理审批）；返工/返修后强制复检；支持原因分类统计（人机料法环）。
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 13: 成品检验与合格证流程 -->
+      <div class="slide" data-index="13">
+        <div class="slide-inner">
+          <h2 class="slide-title">13 业务流程图：成品检验与合格证</h2>
+          <p style="margin-bottom:20px;">所有工序完成后进行综合判定，合格后生成附带二维码的合格证。</p>
+
+          <div class="card" style="max-width:680px; margin:0 auto;">
+            <div class="flowchart">
+              <div class="flow-node start">所有工序检验完成</div>
+              <div class="flow-arrow">&#11015;</div>
+              <div class="flow-node">成品报检</div>
+              <div class="flow-arrow">&#11015;</div>
+              <div class="flow-node">外观检验</div>
+              <div class="flow-arrow">&#11015;</div>
+              <div class="flow-node">尺寸精度检测</div>
+              <div class="flow-arrow">&#11015;</div>
+              <div class="flow-node">无损检测复核(UT/MT/PT)</div>
+              <div class="flow-arrow">&#11015;</div>
+              <div class="flow-node decision">综合判定</div>
+              <div class="flow-row">
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <span class="flow-annotation">不合格</span>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node end">转入不合格品管理</div>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node">记录缺陷位置/返修建议</div>
+                </div>
+                <div style="width:40px;"></div>
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                  <span class="flow-annotation">合格</span>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node action">生成合格证</div>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node">打印二维码标签</div>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node">扫码绑定产品实体</div>
+                  <div class="flow-arrow">&#11015;</div>
+                  <div class="flow-node start">成品入库/出厂</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="highlight-box" style="max-width:680px; margin:20px auto 0;">
+            <strong>关键点：</strong>二维码包含产品编号、批次、主要检验数据、合格证编号；支持追溯扫码查看完整质量信息；合格证支持自定义模板和电子签章。
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 14: 质量追溯与整体视图 -->
+      <div class="slide" data-index="14">
+        <div class="slide-inner">
+          <h2 class="slide-title">14 业务流程图：质量追溯与整体集成</h2>
+
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><span class="icon-box" style="background:var(--purple); color:#fff;">&#128269;</span> 质量追溯流程</div>
+              <div class="flowchart" style="padding:10px 0;">
+                <div class="flow-node">用户输入批次号/产品编号</div>
+                <div class="flow-arrow">&#11015;</div>
+                <div class="flow-node action">系统检索全流程记录</div>
+                <div class="flow-row">
+                  <div class="flow-node" style="font-size:0.75rem; min-width:100px;">原材料信息</div>
+                  <div class="flow-node" style="font-size:0.75rem; min-width:100px;">各工序检验记录</div>
+                </div>
+                <div class="flow-row">
+                  <div class="flow-node" style="font-size:0.75rem; min-width:100px;">不合格品处理记录</div>
+                  <div class="flow-node" style="font-size:0.75rem; min-width:100px;">成品合格证及附件</div>
+                </div>
+                <div class="flow-arrow">&#11015;</div>
+                <div class="flow-node start">图形化追溯链条</div>
+                <div class="flow-arrow">&#11015;</div>
+                <div class="flow-row">
+                  <div class="flow-node" style="font-size:0.75rem;">导出追溯报告PDF</div>
+                  <div class="flow-node end" style="font-size:0.75rem;">异常快速定位</div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><span class="icon-box" style="background:var(--blue); color:#fff;">&#128202;</span> 整体集成视图</div>
+              <div style="margin-top:12px;">
+                <div style="background:var(--green); border:var(--border); padding:10px; margin-bottom:8px; font-weight:800; font-size:0.85rem;">&#9679; 原材料管理：批次登记 → 检验 → 合格/不合格</div>
+                <div style="background:var(--blue); border:var(--border); padding:10px; margin-bottom:8px; font-weight:800; font-size:0.85rem; color:#fff;">&#9679; 生产过程：切割检验 → 焊接检验 → 组装检验 → 涂装检验</div>
+                <div style="background:var(--yellow); border:var(--border); padding:10px; margin-bottom:8px; font-weight:800; font-size:0.85rem;">&#9679; 成品管理：成品检验 → 合格证 → 二维码</div>
+                <div style="background:var(--pink); border:var(--border); padding:10px; margin-bottom:8px; font-weight:800; font-size:0.85rem; color:#fff;">&#9679; 不合格品闭环：登记 → 原因分析 → 返工/返修/报废 → 复验</div>
+                <div style="margin-top:12px; padding:10px; border:2px dashed var(--black); font-weight:700; font-size:0.8rem;">
+                  <strong>数据流向：</strong>原材料合格 → 生产工序；工序合格 → 成品检验；复验合格 → 成品检验；所有数据 → 质量追溯数据库
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="highlight-box">
+            <strong>关键点：</strong>需支持跨表关联查询；展示上下游依赖关系（如某批次原材料用于哪些产品）；召回管理支持受影响产品批次自动锁定。
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 15: 售前核心问题 -->
+      <div class="slide" data-index="15">
+        <div class="slide-inner">
+          <h2 class="slide-title">15 待确认问题：售前核心问题</h2>
+          <p style="margin-bottom:16px;">以下问题直接影响系统架构设计、实施难度和报价评估，需在需求澄清会上重点确认。</p>
+
+          <div class="card" style="border-left:6px solid var(--pink);">
+            <div class="card-header"><span class="icon-box" style="background:var(--pink); color:#fff;">1</span> 客户真实业务复杂度 vs 文档描述的差异</div>
+            <ul>
+              <li>文档中提到的"工序检验"包括切割、焊接、组装、涂装，但<strong>未说明是否存在跨车间协同、外协加工、返工流程</strong></li>
+              <li><strong>是否已有MES、ERP、条码/RFID等系统？</strong>若没有，质检数据采集方式（手工录入/PDA/平板）将极大影响系统设计</li>
+              <li>质检人员年龄结构、IT技能水平如何？是否愿意使用移动端录入？</li>
+            </ul>
+          </div>
+
+          <div class="card" style="border-left:6px solid var(--blue);">
+            <div class="card-header"><span class="icon-box" style="background:var(--blue); color:#fff;">2</span> 系统集成能力与接口成熟度</div>
+            <ul>
+              <li>ERP品牌及版本？是否有开放API？是否可提供接口文档？</li>
+              <li>生产设备是否具备数据采集接口（如PLC、OPC UA、Modbus）？</li>
+              <li>数智平台是客户自研还是第三方？接口标准是什么？</li>
+              <li>是否需要与现有工业互联网平台对接？</li>
+            </ul>
+          </div>
+
+          <div class="card" style="border-left:6px solid var(--orange);">
+            <div class="card-header"><span class="icon-box" style="background:var(--orange); color:#fff;">3</span> 数据迁移与历史数据清理</div>
+            <ul>
+              <li>现有质量数据是否在Excel、纸质记录中？量有多大？</li>
+              <li>是否有历史不合格品记录需要迁移？</li>
+              <li>是否需要与原有系统并行运行（过渡期）？</li>
+            </ul>
+          </div>
+
+          <div class="card" style="border-left:6px solid var(--green);">
+            <div class="card-header"><span class="icon-box" style="background:var(--green);">4</span> 部署方式与安全合规</div>
+            <ul>
+              <li>本地服务器、私有云还是SaaS公有云？</li>
+              <li>是否需要等保测评（二级/三级）？</li>
+              <li>是否需要对接企业AD域/单点登录？</li>
+              <li>是否要求满足ISO 9001审核追溯要求？</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 16: 功能疑点（上） -->
+      <div class="slide" data-index="16">
+        <div class="slide-inner">
+          <h2 class="slide-title">16 待确认问题：具体功能疑点（上）</h2>
+
+          <div class="card">
+            <div class="card-header" style="background:var(--yellow); display:inline-block; padding:4px 12px; margin-bottom:12px;">原材料检验管理（QR-001 ~ QR-005）</div>
+            <table class="data-table">
+              <tr><th style="width:80px;">编号</th><th>疑点问题</th></tr>
+              <tr><td>问题1</td><td>批次编号规则未定义（是否由系统自动生成？是否与ERP一致？）</td></tr>
+              <tr><td>问题2</td><td>材质证明文件上传格式、大小、数量限制？是否需要OCR识别关键字段？</td></tr>
+              <tr><td>问题3</td><td>外观检验记录是否支持照片/视频上传？是否支持缺陷位置标注？</td></tr>
+              <tr><td>问题4</td><td>理化性能测试数据是否支持批量导入（如Excel模板）？是否允许手动修正？</td></tr>
+            </table>
+          </div>
+
+          <div class="card">
+            <div class="card-header" style="background:var(--blue); color:#fff; display:inline-block; padding:4px 12px; margin-bottom:12px;">生产过程检验（QR-006 ~ QR-010）</div>
+            <table class="data-table">
+              <tr><th style="width:80px;">编号</th><th>疑点问题</th></tr>
+              <tr><td>问题5</td><td>工序检验是否与工单绑定？工单信息从何处来（ERP/MES/手动录入）？</td></tr>
+              <tr><td>问题6</td><td>无损检测（UT/MT/PT）结果是否包含图像、波形、探头参数？</td></tr>
+              <tr><td>问题7</td><td>检验任务分配是按角色自动触发还是手动派工？提醒方式（短信/钉钉/微信/站内信）？</td></tr>
+            </table>
+          </div>
+
+          <div class="card">
+            <div class="card-header" style="background:var(--green); display:inline-block; padding:4px 12px; margin-bottom:12px;">成品检验管理（QR-011 ~ QR-014）</div>
+            <table class="data-table">
+              <tr><th style="width:80px;">编号</th><th>疑点问题</th></tr>
+              <tr><td>问题8</td><td>二维码追溯信息包含哪些字段？是否支持动态加密？</td></tr>
+              <tr><td>问题9</td><td>产品合格证是否支持自定义模板？是否需要电子签章？</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 17: 功能疑点（下） -->
+      <div class="slide" data-index="17">
+        <div class="slide-inner">
+          <h2 class="slide-title">17 待确认问题：具体功能疑点（下）</h2>
+
+          <div class="card">
+            <div class="card-header" style="background:var(--pink); color:#fff; display:inline-block; padding:4px 12px; margin-bottom:12px;">不合格品管理（QR-015 ~ QR-018）</div>
+            <table class="data-table">
+              <tr><th style="width:80px;">编号</th><th>疑点问题</th></tr>
+              <tr><td>问题10</td><td>不合格品是否需要发起CAPA（纠正与预防措施）流程？</td></tr>
+              <tr><td>问题11</td><td>返工/返修后是否需要重新执行全部工序检验？系统如何标识状态变更？</td></tr>
+            </table>
+          </div>
+
+          <div class="card">
+            <div class="card-header" style="background:var(--purple); color:#fff; display:inline-block; padding:4px 12px; margin-bottom:12px;">质量追溯与统计分析（QR-019 ~ QR-025）</div>
+            <table class="data-table">
+              <tr><th style="width:80px;">编号</th><th>疑点问题</th></tr>
+              <tr><td>问题12</td><td>追溯路径是否支持跨批次、跨产品、跨工序的图形化展示？</td></tr>
+              <tr><td>问题13</td><td>召回管理是否需要支持邮件/短信通知客户？是否需要生成召回报告？</td></tr>
+              <tr><td>问题14</td><td>报表是否支持实时刷新？是否支持自定义维度（班组/设备/时间段）？</td></tr>
+              <tr><td>问题15</td><td>趋势分析是否支持SPC（统计过程控制）判异规则？</td></tr>
+            </table>
+          </div>
+
+          <div class="card">
+            <div class="card-header" style="background:var(--black); color:#fff; display:inline-block; padding:4px 12px; margin-bottom:12px;">系统管理（QR-026 ~ QR-028）</div>
+            <table class="data-table">
+              <tr><th style="width:80px;">编号</th><th>疑点问题</th></tr>
+              <tr><td>问题16</td><td>用户权限是否支持字段级（如部分人员不可见"不合格原因"）？</td></tr>
+              <tr><td>问题17</td><td>操作日志是否支持审计追踪（满足FDA 21 CFR Part 11）？</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 18: 非功能需求风险 -->
+      <div class="slide" data-index="18">
+        <div class="slide-inner">
+          <h2 class="slide-title">18 待确认问题：非功能需求风险</h2>
+
+          <div class="card">
+            <table class="data-table">
+              <tr><th style="width:80px;">编号</th><th>疑点</th><th>建议</th></tr>
+              <tr>
+                <td>QN-001</td>
+                <td>复杂报表（如跨年度趋势）≤3秒是否可实现？</td>
+                <td>需确认数据量、数据库选型、是否使用数据仓库</td>
+              </tr>
+              <tr>
+                <td>QN-002</td>
+                <td>50并发用户是否包含报表导出、批量导入？</td>
+                <td>需做压力测试，建议明确并发场景</td>
+              </tr>
+              <tr>
+                <td>QN-006</td>
+                <td>7×24支持但工作时间1小时响应，非工作时间响应时间？</td>
+                <td>建议明确SLA（服务等级协议）</td>
+              </tr>
+              <tr>
+                <td>QN-009</td>
+                <td>关键数据加密存储是否包括检验图片、附件？</td>
+                <td>性能影响较大，建议评估是否必要</td>
+              </tr>
+              <tr>
+                <td>QN-013</td>
+                <td>"快捷键操作"具体指哪些功能？</td>
+                <td>建议列出优先级（如F1帮助、Ctrl+S保存）</td>
+              </tr>
+            </table>
+          </div>
+
+          <h3 style="background:var(--orange);">验收标准中的隐藏问题</h3>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header">功能验收</div>
+              <p>未说明<strong>验收环境是否与生产环境一致</strong>（数据量、网络、并发）。建议在UAT环境使用脱敏生产数据验证。</p>
+            </div>
+            <div class="card">
+              <div class="card-header">性能验收</div>
+              <p>未说明<strong>复杂报表查询的SQL复杂度</strong>（是否存在多表关联、非结构化数据）。建议提前定义典型报表场景。</p>
+            </div>
+            <div class="card">
+              <div class="card-header">安全验收</div>
+              <p>未提到<strong>渗透测试、漏洞扫描</strong>是否属于验收内容。如客户有等保要求，需提前纳入验收清单。</p>
+            </div>
+            <div class="card">
+              <div class="card-header">数据验收</div>
+              <p>未明确<strong>历史数据迁移的验收标准</strong>（完整性、准确性）。建议制定数据迁移验证方案。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 19: 实施规划与下一步 -->
+      <div class="slide" data-index="19">
+        <div class="slide-inner">
+          <h2 class="slide-title">19 实施规划与下一步行动</h2>
+
+          <div class="grid-2">
+            <div>
+              <h3 style="background:var(--green);">建议项目周期</h3>
+              <div class="card">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                  <div class="stat-box" style="min-width:100px; padding:12px;"><div class="stat-number">10-12</div><div class="stat-label">总工期(周)</div></div>
+                </div>
+                <table class="data-table" style="font-size:0.8rem;">
+                  <tr><th>阶段</th><th>周期</th><th>交付物</th></tr>
+                  <tr><td>需求确认</td><td>1周</td><td>需求确认书</td></tr>
+                  <tr><td>系统设计</td><td>2周</td><td>概要/详细设计文档</td></tr>
+                  <tr><td>开发实现</td><td>5周</td><td>系统源码</td></tr>
+                  <tr><td>测试验收</td><td>2周</td><td>测试报告</td></tr>
+                  <tr><td>培训上线</td><td>2周</td><td>操作手册、培训完成</td></tr>
+                </table>
+              </div>
+
+              <h3 style="background:var(--blue);">交付物清单</h3>
+              <div class="card">
+                <ul style="font-size:0.85rem;">
+                  <li>系统源码及部署文档</li>
+                  <li>用户操作手册</li>
+                  <li>系统测试报告</li>
+                  <li>数据迁移方案与执行报告</li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <h3 style="background:var(--pink);">售前建议行动清单</h3>
+              <div class="card">
+                <div class="card-header">1. 组织现场需求澄清会</div>
+                <p style="font-size:0.85rem;">至少半天，重点确认：工序流转方式（工单/派工/报工）、检验数据采集终端（PC/平板/手机/手持机）、不合格品审批流程（几人、几级）。</p>
+              </div>
+              <div class="card">
+                <div class="card-header">2. 要求客户提供资料</div>
+                <p style="font-size:0.85rem;">现有质检表单/记录模板（Excel/纸质）、ERP/MES系统接口文档（如有）、产品编号/批次编号/工序编码规则。</p>
+              </div>
+              <div class="card">
+                <div class="card-header">3. 输出售前解决方案建议书</div>
+                <p style="font-size:0.85rem;">明确分阶段交付计划（MVP vs 完整版）、未覆盖需求的风险清单、技术支持与维护响应SLA。</p>
+              </div>
+              <div class="card">
+                <div class="card-header">4. 评估报价模式</div>
+                <p style="font-size:0.85rem;">按用户数+功能模块报价；是否私有化部署+源码授权；第三方系统对接费用。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 20: End -->
+      <div class="slide" data-index="20">
+        <div class="end-slide">
+          <div class="cover-tag">PROJ-2026-004</div>
+          <div class="end-title">谢谢</div>
+          <div class="end-text">
+            本报告基于客户需求文档及业务流程分析整理，旨在为售前阶段提供需求全景视图。<br><br>
+            下一步建议：组织现场需求澄清会，逐项确认待解决问题，输出正式解决方案建议书。<br><br>
+            <strong>上海建工江苏钢结构有限公司 QMS系统</strong><br>
+            需求调研报告 | 2026年5月7日
+          </div>
+          <div style="margin-top:40px; display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
+            <span class="badge badge-green">6大核心模块</span>
+            <span class="badge badge-blue">28项功能需求</span>
+            <span class="badge badge-yellow">70项细化功能</span>
+            <span class="badge badge-pink">10-12周工期</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="bottomBar">
+      <button class="nav-btn secondary" id="prevBtn">&#9664; 上一页</button>
+      <button class="nav-btn" id="nextBtn">下一页 &#9654;</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const totalSlides = 21;
+  let current = 0;
+
+  const slides = document.querySelectorAll('.slide');
+  const navItems = document.querySelectorAll('.nav-item');
+  const currPageEl = document.getElementById('currPage');
+  const totalPageEl = document.getElementById('totalPage');
+  const progressBar = document.getElementById('progressBar');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+
+  function updateSlide(index) {
+    if (index < 0 || index >= totalSlides) return;
+    const direction = index > current ? 1 : -1;
+    slides.forEach((s, i) => {
+      s.classList.remove('active', 'prev');
+      if (i === index) {
+        s.classList.add('active');
+        s.style.display = 'block';
+      } else if (i === current) {
+        s.classList.add('prev');
+        s.style.display = 'block';
+      } else {
+        s.style.display = 'none';
+      }
+    });
+    current = index;
+    currPageEl.textContent = current + 1;
+    progressBar.style.width = ((current + 1) / totalSlides * 100) + '%';
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === totalSlides - 1;
+
+    navItems.forEach(n => n.classList.remove('active'));
+    if (navItems[current]) navItems[current].classList.add('active');
+
+    // Scroll to top
+    document.getElementById('slideContainer').scrollTop = 0;
+    slides[current].scrollTop = 0;
+  }
+
+  prevBtn.addEventListener('click', () => updateSlide(current - 1));
+  nextBtn.addEventListener('click', () => updateSlide(current + 1));
+
+  navItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      const idx = parseInt(item.dataset.index, 10);
+      updateSlide(idx);
+    });
+  });
+
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      e.preventDefault();
+      updateSlide(current + 1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      updateSlide(current - 1);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      updateSlide(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      updateSlide(totalSlides - 1);
+    }
+  });
+
+  // Touch swipe support
+  let touchStartX = 0;
+  let touchEndX = 0;
+  const container = document.getElementById('slideContainer');
+  container.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, {passive: true});
+  container.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) updateSlide(current + 1);
+      else updateSlide(current - 1);
+    }
+  }, {passive: true});
+
+  // Init
+  totalPageEl.textContent = totalSlides;
+  updateSlide(0);
+})();
+</script>
+</body>
+</html>
